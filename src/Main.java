@@ -1,7 +1,18 @@
 import java.io.IOException;
 import java.util.*;
 
+
+/**
+ * The Main class is the entry point for the Longhorn Network simulation.
+ * It handles reading input data, roommate matching, pod formation, and finding internship referral paths
+ */
 public class Main {
+    /**
+     *Reads the input file, processes the students, and performs various operations like roommate assignment,
+     * pod formation, and referral path finding.
+     *
+     * @param args Command-line arguments- the first argument should be the input file name containing student data.
+     */
     public static void main(String[] args) {
         if (args.length == 0) {
             System.out.println("Please provide the input file name as a command-line argument.");
