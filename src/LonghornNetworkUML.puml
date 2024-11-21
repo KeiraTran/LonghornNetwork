@@ -1,0 +1,90 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+class Main {
+    - inputFile: String
+    + main(args: String[]) : void
+
+}
+
+class ChatThread {
+    + ChatThread(sender: UniversityStudent,
+    receiver: UniversityStudent,
+    message: string)
+    + run() : void
+
+}
+
+class DataParser {
+    + parseStudents(fileName: String) : List<UniversityStudent>
+}
+
+class FriendRequestThread {
+    + FriendRequestThread(sender: UniversityStudent,
+    receiver: UniversityStudent)
+    + run() : void
+}
+
+class GaleShapley {
+    + assignRoommates(students: List<Student>) : void
+}
+
+
+class PodFormation {
+    - graph: StudentGraph
+    + PodFormation(graph: StudentGraph)
+    + formPods(podSize: int) : void
+}
+class ReferralPathFinder {
+    - graph: StudentGraph
+    + referralPathFinder(graph: StudentGraph)
+    + findReferralPath(start: UniversityStudent, targetCompany: String)
+
+}
+class Student {
+    # name: String
+    # age: int
+    # gender: String
+    # year: int
+    # major: String
+    # gpa: double
+    # roommatePreferences: List<String>
+    # previousInternships: List<String>
+
+    + calculateConnectionStrength(other: Student) : int
+
+}
+class UniversityStudent{
+    + UniversityStudent(name: String, age: int, major: String, gpa: double, gender: String)
+    - friends : List<UniversityStudent>
+    + getFriends() : List<UniversityStudent>
+    + setFriends() : void
+    + calculateConnectionStrength(other: Student) : int
+}
+
+class StudentGraph {
+    - students: List<UniversityStudent>
+    + StudentGraph(students: List<UniversityStudent>)
+    + getConnections(student: UniversityStudent) : List<UniversityStudent>
+}
+
+Student --x StudentGraph
+Student --x GaleShapley
+Student --x PodFormation
+Student --> DataParser
+Student --> FriendRequestThread
+Student --> ChatThread
+Student --> ReferralPathFinder
+
+StudentGraph --> ReferralPathFinder
+UniversityStudent --> Student
+
+DataParser --> Main
+ReferralPathFinder --> Main
+Student --> Main
+PodFormation --> Main
+FriendRequestThread --> Main
+GaleShapley --> Main
+ChatThread --> Main
+@enduml
