@@ -43,7 +43,7 @@ public class BasicWindow extends JFrame {
         chatButton.setBackground(buttonColor);
         chatButton.setFont(new Font("Arial", Font.BOLD, 12));
 
-        visualizeGraphButton = new JButton("Visualize Graph");
+        visualizeGraphButton = new JButton("Adjacency Matrix");
         visualizeGraphButton.setBackground(buttonColor);
         visualizeGraphButton.setFont(new Font("Arial", Font.BOLD, 12));
 

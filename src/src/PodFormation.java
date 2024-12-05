@@ -1,7 +1,6 @@
 package src;
 import java.util.*;
 
-
 /**
  * The PodFormation class helps to form pods based on a graph of student connections
  * It uses Prim’s algorithm to group students into pods
@@ -27,55 +26,46 @@ public class PodFormation {
      */
     public void formPods(int podSize) {
         List<UniversityStudent> students = graph.getStudents();
-        List<UniversityStudent> currentPod = new ArrayList<>();
         Set<UniversityStudent> visited = new HashSet<>();
+        PriorityQueue<Edge> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(e -> -e.weight));
 
-        // Start pod formation - pick first two students
-        Iterator<UniversityStudent> iterator = students.iterator();
-
-        // add first student
-        if (iterator.hasNext()) {
-            UniversityStudent firstStudent = iterator.next();
-            currentPod.add(firstStudent);
-            visited.add(firstStudent);
-        }
-
-        // add next student
-        if (iterator.hasNext()) {
-            UniversityStudent secondStudent = iterator.next();
-            currentPod.add(secondStudent);
-            visited.add(secondStudent);
-        }
-
-        // add the rest of the students to the pods
-        while (iterator.hasNext()) {
-            UniversityStudent student = iterator.next();
+        for (UniversityStudent student : students) {
             if (!visited.contains(student)) {
-                currentPod.add(student);
+                List<UniversityStudent> currentPod = new ArrayList<>();
                 visited.add(student);
+                currentPod.add(student);
+
+                // starting edges
+                for (UniversityStudent neighbor : students) {
+                    if (!visited.contains(neighbor)) {
+                        int weight = student.calculateConnectionStrength(neighbor);
+                        priorityQueue.add(new Edge(student, neighbor, weight));
+                    }
+                }
+
+                // build pod
+                while (!priorityQueue.isEmpty() && currentPod.size() < podSize) {
+                    Edge edge = priorityQueue.poll();
+                    if (!visited.contains(edge.to)) {
+                        visited.add(edge.to);
+                        currentPod.add(edge.to);
+
+                        // add edges from the new student
+                        for (UniversityStudent neighbor : students) {
+                            if (!visited.contains(neighbor)) {
+                                int weight = edge.to.calculateConnectionStrength(neighbor);
+                                priorityQueue.add(new Edge(edge.to, neighbor, weight));
+                            }
+                        }
+                    }
+                }
+
+                pods.add(currentPod);// Add the pod to the list
+
+
             }
 
-            // if the pod size maxes out, make a new one
-            if (currentPod.size() == podSize) {
-                pods.add(new ArrayList<>(currentPod));
-                currentPod.clear();
-            }
         }
-
-        // if remaining students don't fit into an existing pod, add them to the last pod
-        if (!currentPod.isEmpty()) {
-            pods.add(currentPod);
-        }
-
-        // Print the pods
-//        int podNumber = 0;
-//        for (List<UniversityStudent> pod : pods) {
-//            System.out.print("Pod " + podNumber++ + ": ");
-//            for (UniversityStudent student : pod) {
-//                System.out.print(student.getName() + " ");
-//            }
-//            System.out.println();
-//        }
     }
 
     /**
@@ -85,5 +75,20 @@ public class PodFormation {
      */
     public List<List<UniversityStudent>> getPods() {
         return pods;
+    }
+
+    /**
+     * helper class that represents each weighted edge
+     */
+    private static class Edge {
+        UniversityStudent from;
+        UniversityStudent to;
+        int weight;
+
+        public Edge(UniversityStudent from, UniversityStudent to, int weight) {
+            this.from = from;
+            this.to = to;
+            this.weight = weight;
+        }
     }
 }
