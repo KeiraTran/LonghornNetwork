@@ -1,7 +1,6 @@
 package src;
 import java.util.*;
 
-
 /**
  * The ReferralPathFinder class helps to find referral paths between students using their connections
  * Uses Dijkstra’s algorithm to find the shortest path to a student who interned at a specified company
@@ -15,11 +14,8 @@ public class ReferralPathFinder {
     private final StudentGraph graph;
 
     public ReferralPathFinder(StudentGraph graph) {
-
         this.graph = graph;
-
     }
-    
 
     /**
      * Finds the referral path from the starting student to a student who interned at the target company.
@@ -41,9 +37,8 @@ public class ReferralPathFinder {
             distances.put(student, Integer.MAX_VALUE);
         }
         distances.put(startStudent, 0);
-        
-        PriorityQueue<UniversityStudent> pQueue = new PriorityQueue<>(Comparator.comparingInt(student -> distances.get(student)));
 
+        PriorityQueue<UniversityStudent> pQueue = new PriorityQueue<>(Comparator.comparingInt(distances::get));
         pQueue.add(startStudent);
 
         while (!pQueue.isEmpty()) {
@@ -54,7 +49,7 @@ public class ReferralPathFinder {
 
             visited.add(current);
 
-            // check if the current student has an internship at the target company
+            // Check if the current student has an internship at the target company.
             if (current.getPreviousInternships().contains(targetCompany)) {
                 return reconstructPath(startStudent, current, parentMap);
             }
@@ -65,7 +60,10 @@ public class ReferralPathFinder {
                     continue;
                 }
 
-                int newDist = distances.get(current) + graph.getConnectionStrength(current, neighbor);
+                // calculateConnectionStrength
+                int connectionStrength = current.calculateConnectionStrength(neighbor);
+                int newDist = distances.get(current) + connectionStrength;
+
                 if (newDist < distances.get(neighbor)) {
                     distances.put(neighbor, newDist);
                     parentMap.put(neighbor, current);
@@ -92,8 +90,6 @@ public class ReferralPathFinder {
         return path;
     }
 
-
-
     // Calculate the weight of the path
     public int calculatePathWeight(List<UniversityStudent> path) {
         int totalWeight = 0;
@@ -103,10 +99,8 @@ public class ReferralPathFinder {
             UniversityStudent next = path.get(i + 1);
 
             // weight it by connection strength
-            Integer strength = graph.getConnectionStrength(current, next);
-            if (strength != null) {
-                totalWeight += strength;
-            }
+            int strength = current.calculateConnectionStrength(next);
+            totalWeight += strength;
         }
 
         return totalWeight;
