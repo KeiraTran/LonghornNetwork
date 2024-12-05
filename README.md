@@ -2,6 +2,29 @@
 ## ECE 422C Lab 5: Networking with Fellow Longhorns!
 
 ### Longhorn Network
+### Run from root directory: 
+
+- Updating All Files:
+```bash
+javac -d . -sourcepath src src/src/*.java frontend/*.java
+```
+
+- Running a Test Input:
+```bash
+java src/Main testing/input_sample.txt
+```
+- Running Chat Testing (Multithreading):
+```bash
+java src/ChatTesting
+```
+
+- Running SWING GUI:
+```bash
+java BasicWindow
+```
+
+
+---
 
 ### Overview
 This project simulates a social network called **Longhorn Network**, where students are matched with roommates, assigned to pods, and find referral paths for internships.
